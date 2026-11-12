@@ -1,5 +1,4 @@
 
-
 name: Build LineGuard Android APK
 
 on:
@@ -51,6 +50,10 @@ jobs:
       - name: Install updated dependencies
         working-directory: android-source/Linegaurd
         run: pnpm install --no-frozen-lockfile
+
+      - name: Install Expo Babel preset
+        working-directory: android-source/Linegaurd/artifacts/lineguard
+        run: pnpm exec expo install babel-preset-expo
 
       - name: Build release APK
         working-directory: android-source/Linegaurd/artifacts/lineguard/android
