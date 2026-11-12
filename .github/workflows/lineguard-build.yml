@@ -4,7 +4,8 @@ name: Build LineGuard Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -14,8 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out source
+      - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Extract LineGuard source ZIP
+        run: |
+          mkdir -p android-source
+          unzip -q "LineGuard-NGL-Theme-Original-Logo-Corrected.zip" -d android-source
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -34,20 +40,20 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
+        working-directory: android-source/Linegaurd
         run: pnpm install --frozen-lockfile
 
       - name: Generate Android project
-        working-directory: artifacts/lineguard
+        working-directory: android-source/Linegaurd/artifacts/lineguard
         run: pnpm exec expo prebuild --platform android --clean
 
       - name: Build release APK
-        working-directory: artifacts/lineguard/android
+        working-directory: android-source/Linegaurd/artifacts/lineguard/android
         run: ./gradlew assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: lineguard-android-apk
-          path: artifacts/lineguard/android/app/build/outputs/apk/release/app-release.apk
+          path: android-source/Linegaurd/artifacts/lineguard/android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
-
