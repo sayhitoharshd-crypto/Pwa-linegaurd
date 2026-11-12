@@ -1,4 +1,5 @@
 
+
 name: Build LineGuard Android APK
 
 on:
@@ -39,13 +40,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Install dependencies
+      - name: Install project dependencies
         working-directory: android-source/Linegaurd
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Generate Android project
         working-directory: android-source/Linegaurd/artifacts/lineguard
-        run: pnpm exec expo prebuild --platform android --clean
+        run: pnpm exec expo prebuild --platform android --clean --no-install
+
+      - name: Install updated dependencies
+        working-directory: android-source/Linegaurd
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build release APK
         working-directory: android-source/Linegaurd/artifacts/lineguard/android
